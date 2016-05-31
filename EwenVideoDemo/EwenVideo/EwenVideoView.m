@@ -137,7 +137,7 @@
     [self.playOrPauseBtn setBackgroundImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateHighlighted];
     [self.playOrPauseBtn setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected];
     [self.playOrPauseBtn setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected | UIControlStateHighlighted];
-    self.bottomView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7];
+    self.bottomView.backgroundColor = [UIColor clearColor];
     /**
      给clearView添加手势
      */
@@ -184,7 +184,7 @@
  *  手势事件
  */
 - (void)tapGesture:(UITapGestureRecognizer *)sender{
-    if (_bottomView.hidden == YES) {
+    if (_bottomView.alpha == 0) {
         [self controlViewOutHidden];
     }else{
         [self controlViewHidden];
@@ -193,15 +193,36 @@
 
 #pragma mark - 控制条隐藏
 -(void)controlViewHidden{
-    _bottomView.hidden = YES;
-    _playOrPauseBtn.hidden = YES;
+
+    [UIView animateWithDuration:0.25 animations:^{
+        _bottomView.alpha = 0;
+        _playOrPauseBtn.alpha = 0;
+
+//        self.videoSlider.alpha = 0;
+//        self.videoProgressView.alpha = 0;
+//        self.playOrPauseBtn.alpha = 0;
+//        self.totalTimeLabel.alpha = 0;
+//        self.timeLabel.alpha = 0;
+
+    }];
+    
     [_hiddenTimer invalidate];
 }
 
 #pragma mark - 控制条退出隐藏
 -(void)controlViewOutHidden{
-    _bottomView.hidden = NO;
-    _playOrPauseBtn.hidden = NO;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        _bottomView.alpha = 1;
+        _playOrPauseBtn.alpha = 1;
+        
+//        self.videoSlider.alpha = 1;
+//        self.videoProgressView.alpha = 1;
+//        self.playOrPauseBtn.alpha = 1;
+//        self.totalTimeLabel.alpha = 1;
+//        self.timeLabel.alpha = 1;
+    }];
+    
     if (!_hiddenTimer.valid) {
         _hiddenTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(controlViewHidden) userInfo:nil repeats:NO];
     }else{
