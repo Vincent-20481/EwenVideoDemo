@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -23,22 +27,22 @@
                                 <constraint firstAttribute="width" constant="45" id="Iu8-bs-HWM"/>
                                 <constraint firstAttribute="height" constant="45" id="OXM-fg-gI6"/>
                             </constraints>
-                            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
                                 <action selector="playOrPauseButtonClicked:" destination="iN0-l3-epB" eventType="touchUpInside" id="Kdo-sD-BZW"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3bx-F1-PIg">
                             <rect key="frame" x="8" y="8" width="46" height="26"/>
-                            <color key="backgroundColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="26" id="I10-Lo-8pd"/>
                                 <constraint firstAttribute="width" constant="46" id="XBK-u3-kJ2"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                            <color key="tintColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="销毁视频">
-                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="destructionVideo:" destination="iN0-l3-epB" eventType="touchUpInside" id="eO2-L6-NRv"/>
@@ -46,18 +50,18 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gEe-zL-fEu">
                             <rect key="frame" x="321" y="8" width="46" height="26"/>
-                            <color key="backgroundColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="46" id="Al6-ZU-ZcC"/>
                                 <constraint firstAttribute="height" constant="26" id="wa5-YS-K9k"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                            <color key="tintColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" red="0.27450980390000002" green="0.63921568630000003" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="竖屏">
-                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <state key="selected" title="横屏">
-                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="horizontalScreen:" destination="iN0-l3-epB" eventType="touchUpInside" id="WUd-iH-vNS"/>
@@ -76,13 +80,13 @@
                                         <constraint firstAttribute="height" constant="21" id="ptb-wB-f74"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KHi-NH-u7j">
                                     <rect key="frame" x="69" y="35" width="239" height="2"/>
-                                    <color key="progressTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="trackTintColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="progressTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="trackTintColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </progressView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C3p-7b-qB8">
                                     <rect key="frame" x="8" y="24" width="53" height="21"/>
@@ -91,7 +95,7 @@
                                         <constraint firstAttribute="width" constant="53" id="utH-xx-YGf"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="lmm-1n-QBD">
@@ -99,14 +103,14 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="30" id="xco-lZ-YB3"/>
                                     </constraints>
-                                    <color key="minimumTrackTintColor" red="0.27450980392156865" green="0.63921568627450975" blue="0.90588235294117647" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="minimumTrackTintColor" red="0.27450980392156865" green="0.63921568627450975" blue="0.90588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <connections>
                                         <action selector="sliderTouching:" destination="iN0-l3-epB" eventType="valueChanged" id="QZS-QJ-rji"/>
                                         <action selector="sliderValueChanged:" destination="iN0-l3-epB" eventType="touchUpInside" id="k16-lz-nBR"/>
                                     </connections>
                                 </slider>
                             </subviews>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstItem="pok-zM-Oti" firstAttribute="leading" secondItem="lmm-1n-QBD" secondAttribute="trailing" constant="6" id="2si-n6-dC1"/>
                                 <constraint firstAttribute="height" constant="55" id="Djw-Zb-CU5"/>
@@ -126,7 +130,7 @@
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="3bx-F1-PIg" firstAttribute="top" secondItem="shT-BH-CWX" secondAttribute="top" constant="8" id="AQd-CE-hRV"/>
                         <constraint firstItem="gcq-46-ZOX" firstAttribute="centerX" secondItem="shT-BH-CWX" secondAttribute="centerX" id="Bxq-t0-L5f"/>
@@ -142,7 +146,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="shT-BH-CWX" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="RGH-lk-fFs"/>
                 <constraint firstItem="shT-BH-CWX" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="RMo-dM-jE1"/>
@@ -162,7 +166,7 @@
                 <outlet property="videoProgressView" destination="KHi-NH-u7j" id="Zyc-gG-Tk7"/>
                 <outlet property="videoSlider" destination="lmm-1n-QBD" id="rzS-YX-LI0"/>
             </connections>
-            <point key="canvasLocation" x="315.5" y="313.5"/>
+            <point key="canvasLocation" x="38" y="62"/>
         </view>
     </objects>
     <resources>

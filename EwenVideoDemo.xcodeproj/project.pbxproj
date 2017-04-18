@@ -17,6 +17,7 @@
 		18AD05EF1CDC680400F9D5B1 /* EwenVideoDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD05EE1CDC680400F9D5B1 /* EwenVideoDemoUITests.m */; };
 		18AD05FF1CDC696400F9D5B1 /* EwenVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD05FE1CDC696400F9D5B1 /* EwenVideoView.m */; };
 		18AD06011CDC698400F9D5B1 /* EwenVideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */; };
+		502AAAFB1EA6541300B43948 /* KevinVideoDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = 502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */; };
 		A195B74EFBF2B4A1BF9FB380 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D76D874D1B97E4A3A18FF6F /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,8 @@
 		18AD05FD1CDC696400F9D5B1 /* EwenVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EwenVideoView.h; sourceTree = "<group>"; };
 		18AD05FE1CDC696400F9D5B1 /* EwenVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EwenVideoView.m; sourceTree = "<group>"; };
 		18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EwenVideoView.xib; sourceTree = "<group>"; };
+		502AAAF91EA6541300B43948 /* KevinVideoDemo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KevinVideoDemo.h; sourceTree = "<group>"; };
+		502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KevinVideoDemo.m; sourceTree = "<group>"; };
 		6D76D874D1B97E4A3A18FF6F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD942E4FC6DD6590531745D0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		DE653B9ED453828C320B41A4 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -113,6 +116,7 @@
 		18AD05C81CDC680400F9D5B1 /* EwenVideoDemo */ = {
 			isa = PBXGroup;
 			children = (
+				502AAAF81EA653CC00B43948 /* KevinVideoDemo */,
 				18AD05FC1CDC694500F9D5B1 /* EwenVideo */,
 				18AD05CC1CDC680400F9D5B1 /* AppDelegate.h */,
 				18AD05CD1CDC680400F9D5B1 /* AppDelegate.m */,
@@ -178,6 +182,15 @@
 				6D76D874D1B97E4A3A18FF6F /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		502AAAF81EA653CC00B43948 /* KevinVideoDemo */ = {
+			isa = PBXGroup;
+			children = (
+				502AAAF91EA6541300B43948 /* KevinVideoDemo.h */,
+				502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */,
+			);
+			path = KevinVideoDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +263,7 @@
 				TargetAttributes = {
 					18AD05C51CDC680400F9D5B1 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = GK9C5UPFGC;
 					};
 					18AD05DE1CDC680400F9D5B1 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -362,6 +376,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				502AAAFB1EA6541300B43948 /* KevinVideoDemo.m in Sources */,
 				18AD05D11CDC680400F9D5B1 /* ViewController.m in Sources */,
 				18AD05CE1CDC680400F9D5B1 /* AppDelegate.m in Sources */,
 				18AD05CB1CDC680400F9D5B1 /* main.m in Sources */,
@@ -507,10 +522,11 @@
 			baseConfigurationReference = AD942E4FC6DD6590531745D0 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = GK9C5UPFGC;
 				INFOPLIST_FILE = EwenVideoDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Ewen.EwenVideoDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = Ewen.EwenVideoDemo.r;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -520,10 +536,11 @@
 			baseConfigurationReference = DE653B9ED453828C320B41A4 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = GK9C5UPFGC;
 				INFOPLIST_FILE = EwenVideoDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Ewen.EwenVideoDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = Ewen.EwenVideoDemo.r;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
