@@ -13,8 +13,10 @@
 #define kScreenheight (kScreenBounds.size.height)
 #define KBL kScreenwidth/375
 #define Window [[UIApplication sharedApplication].delegate window]
-@interface ViewController ()
 
+#import "KevinVideoDemo.h"
+@interface ViewController ()
+@property(nonatomic,strong)KevinVideoDemo *kevinVideo;
 @end
 
 @implementation ViewController
@@ -40,21 +42,23 @@
         make.height.mas_equalTo(kScreenwidth);
     }];
     
-    [self forceOrientation:UIInterfaceOrientationLandscapeLeft];
     
+    
+    [self.view addSubview:self.kevinVideo];
+    [self.kevinVideo mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ewenVideoVideo.bottom).offset(30);
+        make.left.right.mas_equalTo(0);
+        make.height.equalTo(211);
+    }];
 }
 
-- (void)forceOrientation: (UIInterfaceOrientation)orientation {
-    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-        SEL selector = NSSelectorFromString(@"setOrientation:");
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
-        [invocation setSelector:selector];
-        [invocation setTarget: [UIDevice currentDevice]];
-        int val = orientation;
-        [invocation setArgument:&val atIndex:2];
-        [invocation invoke];
+- (KevinVideoDemo *)kevinVideo{
+    if (!_kevinVideo) {
+        _kevinVideo = [KevinVideoDemo new];
     }
+    return _kevinVideo;
 }
+
 
 
 - (void)didReceiveMemoryWarning {

@@ -15,8 +15,9 @@
 @property(nonatomic,strong)UILabel *leftTime;//进度时间
 @property(nonatomic,strong)UILabel *rightTime;//视频总时间
 @property(nonatomic,strong)UIActivityIndicatorView *activityIndicatorView;//等待菊花
-
-
+@property(nonatomic,strong)UIProgressView *progressView;//缓存进度条
+@property(nonatomic,strong)UISlider *slider;//播放进度条
+@property(nonatomic,strong)UIButton *fullScreenButton;//全屏
 
 
 @end
@@ -32,6 +33,7 @@
 }
 
 - (void)createUI{
+    self.backgroundColor = [UIColor grayColor];
     [self.backGroundImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
@@ -100,6 +102,29 @@
     }
     return _activityIndicatorView;
 }
+
+- (UIProgressView *)progressView{
+    if (!_progressView) {
+        _progressView = [UIProgressView new];
+        [self.bottomShabow addSubview:_progressView];
+    }
+    return _progressView;
+}
+
+- (UISlider *)slider{
+    if (!_slider) {
+        _slider = [UISlider new];
+        [self.bottomShabow addSubview:_slider];
+    }
+    return _slider;
+}
+
+
+
+
+
+
+
 
 
 @end
