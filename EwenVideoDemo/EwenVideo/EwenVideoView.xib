@@ -86,7 +86,7 @@
                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KHi-NH-u7j">
                                     <rect key="frame" x="69" y="35" width="239" height="2"/>
                                     <color key="progressTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="trackTintColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="trackTintColor" red="0.52941176470588236" green="0.52999997138977051" blue="0.52999997138977051" alpha="1" colorSpace="calibratedRGB"/>
                                 </progressView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C3p-7b-qB8">
                                     <rect key="frame" x="8" y="24" width="53" height="21"/>
@@ -166,7 +166,7 @@
                 <outlet property="videoProgressView" destination="KHi-NH-u7j" id="Zyc-gG-Tk7"/>
                 <outlet property="videoSlider" destination="lmm-1n-QBD" id="rzS-YX-LI0"/>
             </connections>
-            <point key="canvasLocation" x="38" y="62"/>
+            <point key="canvasLocation" x="-355" y="51"/>
         </view>
     </objects>
     <resources>

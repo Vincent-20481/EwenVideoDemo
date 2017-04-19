@@ -7,18 +7,13 @@
 //
 
 #import "KevinVideoDemo.h"
-
+#import "BottomView.h"
 @interface KevinVideoDemo()
 
 @property(nonatomic,strong)UIImageView *backGroundImageView;//未加载视频默认背景
-@property(nonatomic,strong)UIImageView *bottomShabow;//下方阴影
-@property(nonatomic,strong)UILabel *leftTime;//进度时间
-@property(nonatomic,strong)UILabel *rightTime;//视频总时间
 @property(nonatomic,strong)UIActivityIndicatorView *activityIndicatorView;//等待菊花
-@property(nonatomic,strong)UIProgressView *progressView;//缓存进度条
-@property(nonatomic,strong)UISlider *slider;//播放进度条
-@property(nonatomic,strong)UIButton *fullScreenButton;//全屏
-
+@property(nonatomic,strong)BottomView *bottomView;//底部阴影
+@property(nonatomic,strong)UIButton *playOrPause;
 
 @end
 
@@ -38,12 +33,21 @@
         make.edges.mas_equalTo(0);
     }];
     
-    [self.bottomShabow mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(0);
         make.left.right.mas_equalTo(0);
         make.height.mas_equalTo(55);
     }];
     
+    [self.activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(0);
+        make.width.height.mas_equalTo(50);
+    }];
+    
+    [self.playOrPause mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(0);
+        make.width.height.mas_equalTo(50);
+    }];
     
 }
 
@@ -70,31 +74,6 @@
     return _backGroundImageView;
 }
 
-- (UIImageView *)bottomShabow{
-    if (!_bottomShabow) {
-        _bottomShabow = [UIImageView new];
-        _bottomShabow.userInteractionEnabled = YES;
-        [self addSubview:_bottomShabow];
-    }
-    return _bottomShabow;
-}
-
-- (UILabel *)leftTime{
-    if (!_leftTime) {
-        _leftTime = [UILabel new];
-        [self.bottomShabow addSubview:_leftTime];
-    }
-    return _leftTime;
-}
-
-- (UILabel *)rightTime{
-    if (!_rightTime) {
-        _rightTime = [UILabel new];
-        [self.bottomShabow addSubview:_rightTime];
-    }
-    return _rightTime;
-}
-
 - (UIActivityIndicatorView *)activityIndicatorView{
     if (!_activityIndicatorView) {
         _activityIndicatorView = [UIActivityIndicatorView new];
@@ -103,25 +82,25 @@
     return _activityIndicatorView;
 }
 
-- (UIProgressView *)progressView{
-    if (!_progressView) {
-        _progressView = [UIProgressView new];
-        [self.bottomShabow addSubview:_progressView];
+- (BottomView *)bottomView{
+    if (!_bottomView) {
+        _bottomView = [BottomView new];
+        [self addSubview:_bottomView];
     }
-    return _progressView;
+    return _bottomView;
 }
 
-- (UISlider *)slider{
-    if (!_slider) {
-        _slider = [UISlider new];
-        [self.bottomShabow addSubview:_slider];
+- (UIButton *)playOrPause{
+    if (!_playOrPause) {
+        _playOrPause = [UIButton new];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateNormal];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateHighlighted];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected | UIControlStateHighlighted];
+        [self addSubview:_playOrPause];
     }
-    return _slider;
+    return _playOrPause;
 }
-
-
-
-
 
 
 
