@@ -55,6 +55,7 @@
 - (KevinVideoDemo *)kevinVideo{
     if (!_kevinVideo) {
         _kevinVideo = [KevinVideoDemo new];
+        _kevinVideo.videoUrlStr = @"http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4";
     }
     return _kevinVideo;
 }

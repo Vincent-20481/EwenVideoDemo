@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <Masonry.h>
+#import <AVFoundation/AVFoundation.h>
+
+#define kScreenBounds ([[UIScreen mainScreen] bounds])
+#define kScreenwidth (kScreenBounds.size.width)
+#define kScreenheight (kScreenBounds.size.height)
+#define Window [[UIApplication sharedApplication].delegate window]
 @interface KevinVideoDemo : UIView
+
+@property(nonatomic,strong)NSString *videoUrlStr;
 
 @end

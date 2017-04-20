@@ -13,7 +13,6 @@
 #define Window [[UIApplication sharedApplication].delegate window]
 
 @interface EwenVideoView()
-
 {
     //用来控制上下菜单view隐藏的timer
     NSTimer * _hiddenTimer;
@@ -453,10 +452,7 @@
 
 
 
-#pragma mark - 用来将layer转为AVPlayerLayer, 必须实现的方法, 否则会崩
-+(Class)layerClass{
-    return [AVPlayerLayer class];
-}
+
 
 #pragma mark - 根据秒数计算时间
 
