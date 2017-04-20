@@ -59,7 +59,7 @@
         make.left.equalTo(self.leftTime.right).offset(8);
         make.centerY.equalTo(self.leftTime);
         make.right.equalTo(self.rightTime.left).offset(-8);
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(30);
     }];
     
     
