@@ -34,14 +34,19 @@
         make.bottom.mas_equalTo(-10);
         make.left.mas_equalTo(8);
         make.height.mas_equalTo(12);
-        make.width.mas_equalTo(53);
+    }];
+    
+    [self.fullScreenButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(-10);
+        make.right.mas_equalTo(-8);
+        make.height.mas_equalTo(12);
+        make.width.mas_equalTo(12);
     }];
     
     [self.rightTime mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(-10);
-        make.right.mas_equalTo(-8);
+        make.right.equalTo(self.fullScreenButton.left).mas_offset(-8);
         make.height.mas_equalTo(12);
-        make.width.mas_equalTo(53);
     }];
     
     [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -57,6 +62,10 @@
         make.right.equalTo(self.rightTime.left).offset(-8);
         make.height.mas_equalTo(30);
     }];
+    
+   
+    
+   
     
     
     self.leftTime.text = @"00:00:00";
@@ -117,6 +126,29 @@
     }
     return _slider;
 }
+
+- (UIButton *)fullScreenButton{
+    if (!_fullScreenButton) {
+        _fullScreenButton = [UIButton new];
+        [_fullScreenButton setBackgroundImage:[UIImage imageNamed:@"full_screen_open"] forState:UIControlStateNormal];
+        [_fullScreenButton setBackgroundImage:[UIImage imageNamed:@"full_screen_open"] forState:UIControlStateHighlighted];
+        [_fullScreenButton setBackgroundImage:[UIImage imageNamed:@"full_screen_close"] forState:UIControlStateSelected];
+        [_fullScreenButton setBackgroundImage:[UIImage imageNamed:@"full_screen_close"] forState:UIControlStateHighlighted | UIControlStateSelected];
+        [_fullScreenButton addTarget:self action:@selector(fullScreenClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_fullScreenButton];
+        
+    }
+    return _fullScreenButton;
+}
+
+- (void)fullScreenClick:(UIButton *)sender{
+    sender.selected = !sender.selected;
+    if (self.fullScreenBlock) {
+        self.fullScreenBlock(sender.selected);
+    }
+}
+
+
 
 - (void)valueChange:(UISlider *)slider{
     

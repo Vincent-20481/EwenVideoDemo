@@ -18,6 +18,16 @@
 @property(nonatomic,strong)AVPlayer *avplayer;
 @property(nonatomic,strong)id timerObserver;
 @property(nonatomic,assign)float totalSeconds;
+
+/**
+ * @b 竖屏的限制block
+ */
+@property(nonatomic,copy)LayoutBlock portraitBlock;
+
+/**
+ * @b 横屏的限制block
+ */
+@property(nonatomic,copy)LayoutBlock landscapeBlock;
 @end
 
 
@@ -59,7 +69,14 @@
     _videoUrlStr = videoUrlStr;
 }
 
-
+/**
+ * @b 设置初始位置block和, 全屏的block
+ */
+-(void)setPositionWithPortraitBlock:(LayoutBlock)porBlock andLandscapeBlock:(LayoutBlock)landscapeBlock{
+    self.portraitBlock = porBlock;
+    self.landscapeBlock = landscapeBlock;
+    [self mas_makeConstraints:porBlock];
+}
 
 
 
@@ -91,19 +108,45 @@
 
 - (BottomView *)bottomView{
     if (!_bottomView) {
+        __weak typeof(self)WeakSelf = self;
         _bottomView = [BottomView new];
+        _bottomView.fullScreenBlock = ^(BOOL fullStatus) {
+             [WeakSelf removeFromSuperview];
+            if (fullStatus == YES) {
+                [Window addSubview:WeakSelf];
+                [WeakSelf mas_remakeConstraints:WeakSelf.landscapeBlock];
+            }else{
+                [WeakSelf.supView addSubview:WeakSelf];
+                [WeakSelf mas_remakeConstraints:WeakSelf.portraitBlock];
+            }
+            [UIView beginAnimations:nil context:nil];
+            //旋转视频播放的view和显示亮度的view
+            WeakSelf.transform = [WeakSelf getOrientation:fullStatus];
+            [UIView setAnimationDuration:0.5];
+            [UIView commitAnimations];
+        };
         [self addSubview:_bottomView];
     }
     return _bottomView;
 }
 
+//根据状态条旋转的方向来旋转 avplayerView
+-(CGAffineTransform)getOrientation:(BOOL)fullStatusStatus{
+    if (fullStatusStatus == NO){
+        return CGAffineTransformMakeRotation(-2*M_PI);
+    }else{
+        return CGAffineTransformMakeRotation(M_PI_2);
+    }
+}
+
+
 - (UIButton *)playOrPause{
     if (!_playOrPause) {
         _playOrPause = [UIButton new];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateNormal];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play"] forState:UIControlStateHighlighted];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_stop"] forState:UIControlStateSelected | UIControlStateHighlighted];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play-1"] forState:UIControlStateNormal];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play-1"] forState:UIControlStateHighlighted];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"player_video_pause"] forState:UIControlStateSelected];
+        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"player_video_pause"] forState:UIControlStateSelected | UIControlStateHighlighted];
         [_playOrPause addTarget:self action:@selector(playOrPauseClick:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_playOrPause];
     }

@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^FullScreenButtonBlock)(BOOL fullStatus);
+
 @interface BottomView : UIImageView
+
 @property(nonatomic,strong)UILabel *leftTime;//进度时间
 @property(nonatomic,strong)UILabel *rightTime;//视频总时间
 @property(nonatomic,strong)UIProgressView *progressView;//缓存进度条
 @property(nonatomic,strong)UISlider *slider;//播放进度条
 @property(nonatomic,strong)UIButton *fullScreenButton;//全屏
+@property(nonatomic,strong)FullScreenButtonBlock fullScreenBlock;
+
 @end

@@ -166,7 +166,7 @@
                 <outlet property="videoProgressView" destination="KHi-NH-u7j" id="Zyc-gG-Tk7"/>
                 <outlet property="videoSlider" destination="lmm-1n-QBD" id="rzS-YX-LI0"/>
             </connections>
-            <point key="canvasLocation" x="-355" y="51"/>
+            <point key="canvasLocation" x="-628" y="51"/>
         </view>
     </objects>
     <resources>
