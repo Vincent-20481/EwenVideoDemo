@@ -18,9 +18,9 @@
 @property (nonatomic, assign)ZFPlayerState  state;
 @property (nonatomic, assign)NSInteger  seekTime;
 /** 是否再次设置URL播放视频 */
-@property (nonatomic, assign) BOOL                   repeatToPlay;
+@property (nonatomic, assign) BOOL   repeatToPlay;
 /** 播放完了*/
-@property (nonatomic, assign) BOOL                   playDidEnd;
+@property (nonatomic, assign) BOOL   playDidEnd;
 /** 是否正在拖拽 */
 @property (nonatomic, assign)BOOL isDragged;
 /** 是否被用户暂停 */
@@ -43,7 +43,7 @@
 - (void)createUI{
     
     self.backgroundColor = [UIColor grayColor];
-    [self configPlayer];
+    
     [self.clearView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
@@ -77,9 +77,7 @@
     self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
     // 添加播放进度计时器
     [self createTimer];
-    // 开始播放
-    [self play];
-    
+    [self.layer insertSublayer:self.playerLayer atIndex:0];
 }
 
 
@@ -144,6 +142,7 @@
  */
 - (void)setVideoURL:(NSURL *)videoURL {
     _videoURL = videoURL;
+    [self configPlayer];
     // 每次加载视频URL都设置重播为NO
     self.repeatToPlay = NO;
     self.playDidEnd   = NO;
