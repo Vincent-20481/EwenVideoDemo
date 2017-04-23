@@ -8,7 +8,7 @@
 
 #import "BottomView.h"
 #import <Masonry.h>
-@interface BottomView()
+@interface BottomView()<UIGestureRecognizerDelegate>
 
 
 
@@ -105,16 +105,29 @@
 - (UISlider *)slider{
     if (!_slider) {
         _slider = [UISlider new];
-        _slider.minimumValue = 0;
-        _slider.maximumValue = 1;
-        _slider.value = 0;
         _slider.minimumTrackTintColor = [UIColor redColor];
         _slider.maximumTrackTintColor = [UIColor clearColor];
-//        _slider.thumbTintColor = [UIColor purpleColor];
-        _slider.continuous = YES;
         [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateNormal];
         [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateHighlighted];
-        [_slider addTarget:self action:@selector(valueChange:) forControlEvents:(UIControlEventValueChanged)];
+        
+        // slider开始滑动事件
+        [_slider addTarget:self action:@selector(progressSliderTouchBegan:) forControlEvents:UIControlEventTouchDown];
+        // slider滑动中事件
+        [_slider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+        // slider结束滑动事件
+        [_slider addTarget:self action:@selector(progressSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
+        
+        UITapGestureRecognizer *sliderTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapSliderAction:)];
+        [_slider addGestureRecognizer:sliderTap];
+        
+        UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panRecognizer:)];
+        panRecognizer.delegate = self;
+        [panRecognizer setMaximumNumberOfTouches:1];
+        [panRecognizer setDelaysTouchesBegan:YES];
+        [panRecognizer setDelaysTouchesEnded:YES];
+        [panRecognizer setCancelsTouchesInView:YES];
+        [_slider addGestureRecognizer:panRecognizer];
+        
         [self addSubview:_slider];
     }
     return _slider;
@@ -141,26 +154,72 @@
     }
 }
 
-#pragma mark - 根据秒数计算时间
-- (NSString *)calculateTimeWithTimeFormatter:(long long)timeSecond{
-    NSString * theLastTime = nil;
-    if (timeSecond < 60) {
-        theLastTime = [NSString stringWithFormat:@"00:%.2lld", timeSecond];
-    }else if(timeSecond >= 60 && timeSecond < 3600){
-        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld", timeSecond/60, timeSecond%60];
-    }else if(timeSecond >= 3600){
-        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld:%.2lld", timeSecond/3600, timeSecond%3600/60, timeSecond%60];
+/**
+ *  UISlider TapAction
+ */
+- (void)tapSliderAction:(UITapGestureRecognizer *)tap {
+    if ([tap.view isKindOfClass:[UISlider class]]) {
+        UISlider *slider = (UISlider *)tap.view;
+        CGPoint point = [tap locationInView:slider];
+        CGFloat length = slider.frame.size.width;
+        // 视频跳转的value
+        CGFloat tapValue = point.x / length;
+        if ([self.delegate respondsToSelector:@selector(bottomView:progressSliderTap:)]) {
+            [self.delegate bottomView:self progressSliderTap:tapValue];
+        }
     }
-    return theLastTime;
 }
 
+// 不做处理，只是为了滑动slider其他地方不响应其他手势
+- (void)panRecognizer:(UIPanGestureRecognizer *)sender {}
 
-
-- (void)valueChange:(UISlider *)slider{
+- (void)progressSliderTouchBegan:(UISlider *)sender {
     
+    if ([self.delegate respondsToSelector:@selector(bottomView:progressSliderTouchBegan:)]) {
+        [self.delegate bottomView:self progressSliderTouchBegan:sender];
+    }
+}
+
+- (void)progressSliderValueChanged:(UISlider *)sender {
+    [self playerCancelAutoFadeOutControlView];
+    if ([self.delegate respondsToSelector:@selector(bottomView:progressSliderValueChanged:)]) {
+        [self.delegate bottomView:self progressSliderValueChanged:sender];
+    }
+}
+
+- (void)progressSliderTouchEnded:(UISlider *)sender {
+    if ([self.delegate respondsToSelector:@selector(bottomView:progressSliderTouchEnded:)]) {
+        [self.delegate bottomView:self progressSliderTouchEnded:sender];
+    }
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    CGRect rect = [self thumbRect];
+    CGPoint point = [touch locationInView:self.slider];
+    if ([touch.view isKindOfClass:[UISlider class]]) { // 如果在滑块上点击就不响应pan手势
+        if (point.x <= rect.origin.x + rect.size.width && point.x >= rect.origin.x) { return NO; }
+    }
+    return YES;
+}
+
+/**
+ slider滑块的bounds
+ */
+- (CGRect)thumbRect {
+    return [self.slider thumbRectForBounds:self.slider.bounds
+                                      trackRect:[self.slider trackRectForBounds:self.slider.bounds]
+                                          value:self.slider.value];
 }
 
 
+/**
+ *  取消延时隐藏View的方法
+ */
+- (void)playerCancelAutoFadeOutControlView {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
 
 
 

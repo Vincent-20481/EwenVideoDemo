@@ -15,8 +15,6 @@
 		18AD05D91CDC680400F9D5B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18AD05D71CDC680400F9D5B1 /* LaunchScreen.storyboard */; };
 		18AD05E41CDC680400F9D5B1 /* EwenVideoDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD05E31CDC680400F9D5B1 /* EwenVideoDemoTests.m */; };
 		18AD05EF1CDC680400F9D5B1 /* EwenVideoDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD05EE1CDC680400F9D5B1 /* EwenVideoDemoUITests.m */; };
-		18AD05FF1CDC696400F9D5B1 /* EwenVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD05FE1CDC696400F9D5B1 /* EwenVideoView.m */; };
-		18AD06011CDC698400F9D5B1 /* EwenVideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */; };
 		502AAAFB1EA6541300B43948 /* KevinVideoDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = 502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */; };
 		507413FE1EA7BA9C00D58AEF /* BottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 507413FD1EA7BA9C00D58AEF /* BottomView.m */; };
 		50A5FD3B1EAC667200055581 /* ClearView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A5FD3A1EAC667200055581 /* ClearView.m */; };
@@ -57,9 +55,6 @@
 		18AD05EA1CDC680400F9D5B1 /* EwenVideoDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EwenVideoDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18AD05EE1CDC680400F9D5B1 /* EwenVideoDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EwenVideoDemoUITests.m; sourceTree = "<group>"; };
 		18AD05F01CDC680400F9D5B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		18AD05FD1CDC696400F9D5B1 /* EwenVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EwenVideoView.h; sourceTree = "<group>"; };
-		18AD05FE1CDC696400F9D5B1 /* EwenVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EwenVideoView.m; sourceTree = "<group>"; };
-		18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EwenVideoView.xib; sourceTree = "<group>"; };
 		502AAAF91EA6541300B43948 /* KevinVideoDemo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KevinVideoDemo.h; sourceTree = "<group>"; };
 		502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KevinVideoDemo.m; sourceTree = "<group>"; };
 		507413FC1EA7BA9C00D58AEF /* BottomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomView.h; sourceTree = "<group>"; };
@@ -123,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				502AAAF81EA653CC00B43948 /* KevinVideoDemo */,
-				18AD05FC1CDC694500F9D5B1 /* EwenVideo */,
 				18AD05CC1CDC680400F9D5B1 /* AppDelegate.h */,
 				18AD05CD1CDC680400F9D5B1 /* AppDelegate.m */,
 				18AD05CF1CDC680400F9D5B1 /* ViewController.h */,
@@ -161,16 +155,6 @@
 				18AD05F01CDC680400F9D5B1 /* Info.plist */,
 			);
 			path = EwenVideoDemoUITests;
-			sourceTree = "<group>";
-		};
-		18AD05FC1CDC694500F9D5B1 /* EwenVideo */ = {
-			isa = PBXGroup;
-			children = (
-				18AD05FD1CDC696400F9D5B1 /* EwenVideoView.h */,
-				18AD05FE1CDC696400F9D5B1 /* EwenVideoView.m */,
-				18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */,
-			);
-			path = EwenVideo;
 			sourceTree = "<group>";
 		};
 		2D938C109981831BE5E002BD /* Pods */ = {
@@ -313,7 +297,6 @@
 				18AD05D91CDC680400F9D5B1 /* LaunchScreen.storyboard in Resources */,
 				18AD05D61CDC680400F9D5B1 /* Assets.xcassets in Resources */,
 				18AD05D41CDC680400F9D5B1 /* Main.storyboard in Resources */,
-				18AD06011CDC698400F9D5B1 /* EwenVideoView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,7 +373,6 @@
 				18AD05D11CDC680400F9D5B1 /* ViewController.m in Sources */,
 				18AD05CE1CDC680400F9D5B1 /* AppDelegate.m in Sources */,
 				18AD05CB1CDC680400F9D5B1 /* main.m in Sources */,
-				18AD05FF1CDC696400F9D5B1 /* EwenVideoView.m in Sources */,
 				507413FE1EA7BA9C00D58AEF /* BottomView.m in Sources */,
 				50A5FD3B1EAC667200055581 /* ClearView.m in Sources */,
 			);

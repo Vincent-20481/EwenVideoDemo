@@ -9,10 +9,8 @@
 #import "ClearView.h"
 
 
-@interface ClearView(){
-    //用来控制上下菜单view隐藏的timer
-    NSTimer * _hiddenTimer;
-}
+@interface ClearView()
+
 @property(nonatomic,strong)UIButton *backButton;//返回按钮
 /** 是否拖拽slider控制播放进度 */
 @property (nonatomic, assign, getter=isDragged) BOOL  dragged;
@@ -71,7 +69,7 @@
 
 - (UIActivityIndicatorView *)activityIndicatorView{
     if (!_activityIndicatorView) {
-        _activityIndicatorView = [UIActivityIndicatorView new];
+        _activityIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [self addSubview:_activityIndicatorView];
     }
     return _activityIndicatorView;
@@ -179,7 +177,6 @@
         self.backButton.alpha = 0;
         self.playOrPause.alpha = 0;
     }];
-    [_hiddenTimer invalidate];
 }
 
 #pragma mark - 控制条退出隐藏
@@ -190,14 +187,12 @@
         self.backButton.alpha = 1;
         self.playOrPause.alpha = 1;
     }];
-    
-    if (!_hiddenTimer.valid) {
-        _hiddenTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(controlViewHidden) userInfo:nil repeats:NO];
-    }else{
-        [_hiddenTimer invalidate];
-        _hiddenTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(controlViewHidden) userInfo:nil repeats:NO];
-    }
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(controlViewHidden) object:nil];
+    [self performSelector:@selector(controlViewHidden) withObject:nil afterDelay:5];
 }
+
+
+
 
 - (void)EwenplayerActivity:(BOOL)animated{
     if (animated) {
@@ -212,7 +207,7 @@
     // 结束滑动时候把开始播放按钮改为播放状态
     self.playOrPause.selected = YES;
     // 滑动结束延时隐藏controlView
-    [self controlViewHidden];
+    [self controlViewOutHidden];
 }
 
 

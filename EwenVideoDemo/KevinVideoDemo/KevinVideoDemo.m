@@ -8,7 +8,7 @@
 
 #import "KevinVideoDemo.h"
 #import "ClearView.h"
-@interface KevinVideoDemo()
+@interface KevinVideoDemo()<BottomViewDelegate>
 
 @property (nonatomic, strong)AVPlayerItem *playerItem;
 @property (nonatomic, strong)AVPlayer *player;
@@ -25,6 +25,8 @@
 @property (nonatomic, assign)BOOL isDragged;
 /** 是否被用户暂停 */
 @property (nonatomic, assign)BOOL isPauseByUser;
+/** slider上次的值 */
+@property (nonatomic, assign)CGFloat   sliderLastValue;
 
 
 @property(nonatomic,strong)id timerObserver;
@@ -121,6 +123,7 @@
         __weak typeof(self)WeakSelf = self;
         _clearView = [ClearView new];
         _clearView.bmView = self;
+        _clearView.bottomView.delegate = self;
         _clearView.clearViewBlock = ^(BOOL playAndPause) {
             if (playAndPause == YES) {
                 [WeakSelf play];
@@ -201,12 +204,11 @@
                 self.state = ZFPlayerStateFailed;
             }
         } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-            
             // 计算缓冲进度
             NSTimeInterval timeInterval = [self availableDuration];
             CMTime duration             = self.playerItem.duration;
             CGFloat totalDuration       = CMTimeGetSeconds(duration);
-            [self.clearView.bottomView.progressView setProgress:timeInterval/totalDuration animated:NO];
+            [self.clearView.bottomView.progressView setProgress:timeInterval/totalDuration animated:YES];
             
         } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
             
@@ -325,7 +327,6 @@
     // 需要先暂停一小会之后再播放，否则网络状况不好的时候时间在走，声音播放不出来
     [self.player pause];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
         // 如果此时用户已经暂停了，则不再需要开启播放了
         if (self.isPauseByUser) {
             isBuffering = NO;
@@ -339,6 +340,40 @@
         
     });
 }
+
+
+/** slider的点击事件（点击slider控制进度） */
+- (void)bottomView:(UIView *)controlView progressSliderTap:(CGFloat)value{
+    // 视频总时间长度
+    CGFloat total = (CGFloat)self.playerItem.duration.value / self.playerItem.duration.timescale;
+    //计算出拖动的当前秒数
+    NSInteger dragedSeconds = floorf(total * value);
+    self.clearView.playOrPause.selected = YES;
+    [self seekToTime:dragedSeconds completionHandler:^(BOOL finished) {}];
+
+}
+/** 开始触摸slider */
+- (void)bottomView:(UIView *)controlView progressSliderTouchBegan:(UISlider *)slider{
+
+}
+/** slider触摸中 */
+- (void)bottomView:(UIView *)controlView progressSliderValueChanged:(UISlider *)slider{
+  
+
+}
+/** slider触摸结束 */
+- (void)bottomView:(UIView *)controlView progressSliderTouchEnded:(UISlider *)slider{
+    if (self.player.currentItem.status == AVPlayerItemStatusReadyToPlay) {
+        self.isPauseByUser = NO;
+        self.isDragged = NO;
+        // 视频总时间长度
+        CGFloat total    = (CGFloat)_playerItem.duration.value / _playerItem.duration.timescale;
+        //计算出拖动的当前秒数
+        NSInteger dragedSeconds = floorf(total * slider.value);
+        [self seekToTime:dragedSeconds completionHandler:nil];
+    }
+}
+
 
 
 

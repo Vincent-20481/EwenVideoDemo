@@ -31,7 +31,7 @@ typedef void(^ClearViewBlock)(BOOL playAndPause);
 
 /**设置菊花的显示与隐藏*/
 - (void)EwenplayerActivity:(BOOL)animated;
-/**设置菊花的显示与隐藏*/
+/**设置滑动结束*/
 - (void)playerDraggedEnd;
 
 @end
