@@ -51,7 +51,7 @@
     
     [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.leftTime.right).offset(8);
-        make.centerY.equalTo(self.leftTime);
+        make.centerY.equalTo(self.leftTime).offset(1);
         make.right.equalTo(self.rightTime.left).offset(-8);
         make.height.mas_equalTo(1);
     }];
@@ -62,15 +62,8 @@
         make.right.equalTo(self.rightTime.left).offset(-8);
         make.height.mas_equalTo(30);
     }];
-    
-   
-    
-   
-    
-    
-    self.leftTime.text = @"00:00:00";
-    self.rightTime.text = @"00:00:00";
-
+    self.leftTime.text = @"--:--:--";
+    self.rightTime.text = @"--:--:--";
 }
 
 
@@ -116,8 +109,8 @@
         _slider.maximumValue = 1;
         _slider.value = 0;
         _slider.minimumTrackTintColor = [UIColor redColor];
-        _slider.maximumTrackTintColor = [UIColor yellowColor];
-        _slider.thumbTintColor = [UIColor purpleColor];
+        _slider.maximumTrackTintColor = [UIColor clearColor];
+//        _slider.thumbTintColor = [UIColor purpleColor];
         _slider.continuous = YES;
         [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateNormal];
         [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateHighlighted];
@@ -146,6 +139,19 @@
     if (self.fullScreenBlock) {
         self.fullScreenBlock(sender.selected);
     }
+}
+
+#pragma mark - 根据秒数计算时间
+- (NSString *)calculateTimeWithTimeFormatter:(long long)timeSecond{
+    NSString * theLastTime = nil;
+    if (timeSecond < 60) {
+        theLastTime = [NSString stringWithFormat:@"00:%.2lld", timeSecond];
+    }else if(timeSecond >= 60 && timeSecond < 3600){
+        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld", timeSecond/60, timeSecond%60];
+    }else if(timeSecond >= 3600){
+        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld:%.2lld", timeSecond/3600, timeSecond%3600/60, timeSecond%60];
+    }
+    return theLastTime;
 }
 
 

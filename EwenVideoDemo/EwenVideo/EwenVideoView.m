@@ -192,19 +192,10 @@
 
 #pragma mark - 控制条隐藏
 -(void)controlViewHidden{
-
     [UIView animateWithDuration:0.25 animations:^{
         _bottomView.alpha = 0;
         _playOrPauseBtn.alpha = 0;
-
-//        self.videoSlider.alpha = 0;
-//        self.videoProgressView.alpha = 0;
-//        self.playOrPauseBtn.alpha = 0;
-//        self.totalTimeLabel.alpha = 0;
-//        self.timeLabel.alpha = 0;
-
     }];
-    
     [_hiddenTimer invalidate];
 }
 
@@ -214,12 +205,6 @@
     [UIView animateWithDuration:0.25 animations:^{
         _bottomView.alpha = 1;
         _playOrPauseBtn.alpha = 1;
-        
-//        self.videoSlider.alpha = 1;
-//        self.videoProgressView.alpha = 1;
-//        self.playOrPauseBtn.alpha = 1;
-//        self.totalTimeLabel.alpha = 1;
-//        self.timeLabel.alpha = 1;
     }];
     
     if (!_hiddenTimer.valid) {
@@ -455,7 +440,6 @@
 
 
 #pragma mark - 根据秒数计算时间
-
 - (NSString *)calculateTimeWithTimeFormatter:(long long)timeSecond{
     NSString * theLastTime = nil;
     if (timeSecond < 60) {
@@ -487,7 +471,10 @@
     [self removeFromSuperview];
 }
 
-
+#pragma mark - 用来将layer转为AVPlayerLayer, 必须实现的方法, 否则会崩
++(Class)layerClass{
+    return [AVPlayerLayer class];
+}
 
 - (void)dealloc{
     NSLog(@"控制器释放了");

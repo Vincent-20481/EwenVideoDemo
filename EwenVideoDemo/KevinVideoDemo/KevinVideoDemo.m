@@ -7,29 +7,29 @@
 //
 
 #import "KevinVideoDemo.h"
-#import "BottomView.h"
+#import "ClearView.h"
 @interface KevinVideoDemo()
 
-@property(nonatomic,strong)UIImageView *backGroundImageView;//未加载视频默认背景
-@property(nonatomic,strong)UIActivityIndicatorView *activityIndicatorView;//等待菊花
-@property(nonatomic,strong)BottomView *bottomView;//底部阴影
-@property(nonatomic,strong)UIButton *playOrPause;
-@property(nonatomic,strong)AVPlayerItem *avplayerItem;
-@property(nonatomic,strong)AVPlayer *avplayer;
+@property (nonatomic, strong)AVPlayerItem *playerItem;
+@property (nonatomic, strong)AVPlayer *player;
+@property (nonatomic, strong)AVURLAsset *urlAsset;
+@property (nonatomic, strong)AVPlayerLayer *playerLayer;
+@property (nonatomic, strong)id timeObserve;
+@property (nonatomic, assign)ZFPlayerState  state;
+@property (nonatomic, assign)NSInteger  seekTime;
+/** 是否再次设置URL播放视频 */
+@property (nonatomic, assign) BOOL                   repeatToPlay;
+/** 播放完了*/
+@property (nonatomic, assign) BOOL                   playDidEnd;
+/** 是否正在拖拽 */
+@property (nonatomic, assign)BOOL isDragged;
+/** 是否被用户暂停 */
+@property (nonatomic, assign)BOOL isPauseByUser;
+
+
 @property(nonatomic,strong)id timerObserver;
-@property(nonatomic,assign)float totalSeconds;
 
-/**
- * @b 竖屏的限制block
- */
-@property(nonatomic,copy)LayoutBlock portraitBlock;
-
-/**
- * @b 横屏的限制block
- */
-@property(nonatomic,copy)LayoutBlock landscapeBlock;
 @end
-
 
 @implementation KevinVideoDemo
 
@@ -41,272 +41,304 @@
 }
 
 - (void)createUI{
+    
     self.backgroundColor = [UIColor grayColor];
-    [self.backGroundImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self configPlayer];
+    [self.clearView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
+}
+
+#pragma mark - layoutSubviews
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    self.playerLayer.frame = self.bounds;
+}
+
+
+/**设置初始位置block和, 全屏的block*/
+-(void)setPositionWithPortraitBlock:(LayoutBlock)porBlock andLandscapeBlock:(LayoutBlock)landscapeBlock{
+    self.clearView.portraitBlock = porBlock;
+    self.clearView.landscapeBlock = landscapeBlock;
+    [self mas_makeConstraints:porBlock];
     
-    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(0);
-        make.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(55);
-    }];
-    
-    [self.activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(0);
-        make.width.height.mas_equalTo(50);
-    }];
-    
-    [self.playOrPause mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(0);
-        make.width.height.mas_equalTo(50);
-    }];
+}
+
+- (void)configPlayer {
+    self.urlAsset = [AVURLAsset assetWithURL:self.videoURL];
+    // 初始化playerItem
+    self.playerItem = [AVPlayerItem playerItemWithAsset:self.urlAsset];
+    // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
+    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    // 初始化playerLayer
+    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+    // 此处为默认视频填充模式
+    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    // 添加播放进度计时器
+    [self createTimer];
+    // 开始播放
+    [self play];
     
 }
 
 
-- (void)setVideoUrlStr:(NSString *)videoUrlStr{
-    _videoUrlStr = videoUrlStr;
+- (void)createTimer {
+    __weak typeof(self) weakSelf = self;
+    self.timeObserve = [self.player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1, 1) queue:nil usingBlock:^(CMTime time){
+        AVPlayerItem *currentItem = weakSelf.playerItem;
+        NSArray *loadedRanges = currentItem.seekableTimeRanges;
+        if (loadedRanges.count > 0 && currentItem.duration.timescale != 0) {
+            NSInteger currentTime = (NSInteger)CMTimeGetSeconds([currentItem currentTime]);
+            CGFloat totalTime     = (CGFloat)currentItem.duration.value / currentItem.duration.timescale;
+            CGFloat value         = CMTimeGetSeconds([currentItem currentTime]) / totalTime;
+            [weakSelf zf_playerCurrentTime:currentTime totalTime:totalTime sliderValue:value];
+        }
+    }];
 }
+
+- (void)zf_playerCurrentTime:(NSInteger)currentTime totalTime:(NSInteger)totalTime sliderValue:(CGFloat)value {
+    // 当前时长进度progress
+    NSInteger proMin = currentTime / 60;//当前秒
+    NSInteger proSec = currentTime % 60;//当前分钟
+    // duration 总时长
+    NSInteger durMin = totalTime / 60;//总秒
+    NSInteger durSec = totalTime % 60;//总分钟
+    if (!self.isDragged) {
+        // 更新slider
+        self.clearView.bottomView.slider.value           = value;
+        self.clearView.bottomView.progressView.progress = value;
+        // 更新当前播放时间
+        self.clearView.bottomView.leftTime.text       = [NSString stringWithFormat:@"%02zd:%02zd", proMin, proSec];
+    }
+    // 更新总时间
+    self.clearView.bottomView.rightTime.text = [NSString stringWithFormat:@"%02zd:%02zd", durMin, durSec];
+}
+
+
+#pragma mark --- 懒加载
+
+- (ClearView *)clearView{
+    if (!_clearView) {
+        __weak typeof(self)WeakSelf = self;
+        _clearView = [ClearView new];
+        _clearView.bmView = self;
+        _clearView.clearViewBlock = ^(BOOL playAndPause) {
+            if (playAndPause == YES) {
+                [WeakSelf play];
+            }else{
+                [WeakSelf pause];
+            }
+        };
+        [self addSubview:_clearView];
+    }
+    return _clearView;
+}
+
+#pragma mark - Setter
 
 /**
- * @b 设置初始位置block和, 全屏的block
+ *  videoURL的setter方法
+ *
+ *  @param videoURL videoURL
  */
--(void)setPositionWithPortraitBlock:(LayoutBlock)porBlock andLandscapeBlock:(LayoutBlock)landscapeBlock{
-    self.portraitBlock = porBlock;
-    self.landscapeBlock = landscapeBlock;
-    [self mas_makeConstraints:porBlock];
+- (void)setVideoURL:(NSURL *)videoURL {
+    _videoURL = videoURL;
+    // 每次加载视频URL都设置重播为NO
+    self.repeatToPlay = NO;
+    self.playDidEnd   = NO;
+    self.isPauseByUser = YES;
+    
 }
 
-
-
-
-
-
-#pragma mark - 用来将layer转为AVPlayerLayer, 必须实现的方法, 否则会崩
-+(Class)layerClass{
-    return [AVPlayerLayer class];
-}
-
-#pragma mark --- 懒加载控件
-- (UIImageView *)backGroundImageView{
-    if (_backGroundImageView) {
-        _backGroundImageView = [UIImageView new];
-        _backGroundImageView.userInteractionEnabled = YES;
-        [self addSubview:_backGroundImageView];
-    }
-    return _backGroundImageView;
-}
-
-- (UIActivityIndicatorView *)activityIndicatorView{
-    if (!_activityIndicatorView) {
-        _activityIndicatorView = [UIActivityIndicatorView new];
-        [self addSubview:_activityIndicatorView];
-    }
-    return _activityIndicatorView;
-}
-
-- (BottomView *)bottomView{
-    if (!_bottomView) {
-        __weak typeof(self)WeakSelf = self;
-        _bottomView = [BottomView new];
-        _bottomView.fullScreenBlock = ^(BOOL fullStatus) {
-             [WeakSelf removeFromSuperview];
-            if (fullStatus == YES) {
-                [Window addSubview:WeakSelf];
-                [WeakSelf mas_remakeConstraints:WeakSelf.landscapeBlock];
-            }else{
-                [WeakSelf.supView addSubview:WeakSelf];
-                [WeakSelf mas_remakeConstraints:WeakSelf.portraitBlock];
-            }
-            [UIView beginAnimations:nil context:nil];
-            //旋转视频播放的view和显示亮度的view
-            WeakSelf.transform = [WeakSelf getOrientation:fullStatus];
-            [UIView setAnimationDuration:0.5];
-            [UIView commitAnimations];
-        };
-        [self addSubview:_bottomView];
-    }
-    return _bottomView;
-}
-
-//根据状态条旋转的方向来旋转 avplayerView
--(CGAffineTransform)getOrientation:(BOOL)fullStatusStatus{
-    if (fullStatusStatus == NO){
-        return CGAffineTransformMakeRotation(-2*M_PI);
-    }else{
-        return CGAffineTransformMakeRotation(M_PI_2);
-    }
-}
-
-
-- (UIButton *)playOrPause{
-    if (!_playOrPause) {
-        _playOrPause = [UIButton new];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play-1"] forState:UIControlStateNormal];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"video_play-1"] forState:UIControlStateHighlighted];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"player_video_pause"] forState:UIControlStateSelected];
-        [_playOrPause setBackgroundImage:[UIImage imageNamed:@"player_video_pause"] forState:UIControlStateSelected | UIControlStateHighlighted];
-        [_playOrPause addTarget:self action:@selector(playOrPauseClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_playOrPause];
-    }
-    return _playOrPause;
-}
-
-#pragma mark --- 懒加载播放器
-- (AVPlayer *)avplayer{
-    if (!_avplayer) {
-        AVPlayerItem *playerItem = [self getPlayItem];
-        _avplayer = [AVPlayer playerWithPlayerItem:playerItem];
-        _avplayer.usesExternalPlaybackWhileExternalScreenIsActive = YES;
-        [(AVPlayerLayer *)self.layer setPlayer:_avplayer];
-        [self addObserverToPlayerItem:playerItem];
-    }
-    return _avplayer;
-}
-
-
-#pragma mark --- 创建 playerItem
--(AVPlayerItem *)getPlayItem{
-    NSString *urlStr= self.videoUrlStr;
-    urlStr =[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url=[NSURL URLWithString:urlStr];
-    AVPlayerItem *playerItem=[AVPlayerItem playerItemWithURL:url];
-    return playerItem;
-}
 
 #pragma mark --- 添加监控
--(void)addObserverToPlayerItem:(AVPlayerItem *)playerItem{
-    //监控状态属性，注意AVPlayer也有一个status属性，通过监控它的status也可以获得播放状态
-    [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [playerItem addObserver:self forKeyPath:@"playbackBufferFull" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [playerItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
+/**
+ *  根据playerItem，来添加移除观察者
+ *
+ *  @param playerItem playerItem
+ */
+- (void)setPlayerItem:(AVPlayerItem *)playerItem {
+    if (_playerItem == playerItem){return;}
+    if (_playerItem) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_playerItem];
+        [_playerItem removeObserver:self forKeyPath:@"status"];
+        [_playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+        [_playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+        [_playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    }
+    _playerItem = playerItem;
+    if (playerItem) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
+        [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+        [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+        // 缓冲区空了，需要等待数据
+        [playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
+        // 缓冲区有足够数据可以播放了
+        [playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
+    }
 }
 
-#pragma mark --- 移除监控
--(void)removeObserverFromPlayerItem:(AVPlayerItem *)playerItem{
-    [_avplayer removeTimeObserver:self.timerObserver];
-    [playerItem removeObserver:self forKeyPath:@"status"];
-    [playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    [playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-    [playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
-    [playerItem removeObserver:self forKeyPath:@"playbackBufferFull"];
-    [playerItem removeObserver:self forKeyPath:@"presentationSize"];
-}
-
--(void)moviePlayEnd:(NSNotification *)notification{
+-(void)moviePlayDidEnd:(NSNotification *)notification{
     NSLog(@"播放结束");
 }
 
-- (void)playOrPauseClick:(UIButton *)sender{
-    sender.selected = !sender.selected;
-    if (self.playOrPause.selected == YES) {
-         [self.avplayer play];
-    }else{
-        [self.avplayer pause];
-    }
-}
 
 
-#pragma mark - KVO - 监测视频状态, 视频播放的核心部分
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
-    AVPlayerItem *playerItem=object;
-    if ([keyPath isEqualToString:@"status"]) {        //获取到视频信息的状态, 成功就可以进行播放, 失败代表加载失败
-        if (playerItem.status == AVPlayerItemStatusReadyToPlay) {   //准备好播放
-            //self准备好播放
-            [self readyToPlay:playerItem];
-            //avplayerView准备好播放
-            [self readyToPlayConfigPlayView];
-            if (self.playOrPause.selected == YES) {
-                [self.avplayer play];
-            }else{
-                [self.avplayer pause];
+
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == self.player.currentItem) {
+        if ([keyPath isEqualToString:@"status"]) {
+            if (self.player.currentItem.status == AVPlayerItemStatusReadyToPlay) {
+                self.state = ZFPlayerStatePlaying;
+                // 跳到xx秒播放视频
+                if (self.seekTime) {
+                    [self seekToTime:self.seekTime completionHandler:nil];
+                }
+            } else if (self.player.currentItem.status == AVPlayerItemStatusFailed) {
+                self.state = ZFPlayerStateFailed;
             }
-        }else if(playerItem.status == AVPlayerItemStatusFailed){    //加载失败
-            NSLog(@"AVPlayerItemStatusFailed: 视频播放失败");
-        }else if(playerItem.status == AVPlayerItemStatusUnknown){   //未知错误
+        } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
+            
+            // 计算缓冲进度
+            NSTimeInterval timeInterval = [self availableDuration];
+            CMTime duration             = self.playerItem.duration;
+            CGFloat totalDuration       = CMTimeGetSeconds(duration);
+            [self.clearView.bottomView.progressView setProgress:timeInterval/totalDuration animated:NO];
+            
+        } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
+            
+            // 当缓冲是空的时候
+            if (self.playerItem.playbackBufferEmpty) {
+                self.state = ZFPlayerStateBuffering;
+                [self bufferingSomeSecond];
+            }
+            
+        } else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+            // 当缓冲好的时候
+            if (self.playerItem.playbackLikelyToKeepUp && self.state == ZFPlayerStateBuffering){
+                self.state = ZFPlayerStatePlaying;
+            }
         }
-    }else if([keyPath isEqualToString:@"loadedTimeRanges"]){ //当缓冲进度有变化的时候
-        [self updateAvailableDuration:playerItem];
-    }else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]){ //当视频播放因为各种状态播放停止的时候, 这个属性会发生变化
-//        if (self.isPlaying) {
-//            [self.viewAVplayer play];
-//            [self.actIndicator stopAnimating];
-//            self.actIndicator.hidden = YES;
-//        }
-        NSLog(@"playbackLikelyToKeepUp change : %@", change);
-    }else if([keyPath isEqualToString:@"playbackBufferEmpty"]){  //当没有任何缓冲部分可以播放的时候
-//        [self.actIndicator startAnimating];
-//        self.actIndicator.hidden = NO;
-        NSLog(@"playbackBufferEmpty");
-    }else if ([keyPath isEqualToString:@"playbackBufferFull"]){
-        NSLog(@"playbackBufferFull: change : %@", change);
-    }else if([keyPath isEqualToString:@"presentationSize"]){      //获取到视频的大小的时候调用
-        NSLog(@"presentationSize");
     }
 }
 
-#pragma mark - 缓冲好准备播放所做的操作, 并且添加时间观察, 更新播放时间
-- (void)readyToPlay:(AVPlayerItem *)playerItem{
-    _totalSeconds = playerItem.duration.value/playerItem.duration.timescale;
-    _totalSeconds = (float)self.totalSeconds;
-    NSInteger tempLength = self.bottomView.leftTime.text.length;
-    if (tempLength > 5) {
-        self.bottomView.leftTime.text = @"00:00:00";
-    }else{
-        self.bottomView.leftTime.text = @"00:00";
+/**
+ *  播放
+ */
+- (void)play {
+    self.clearView.playOrPause.selected = YES;
+    if (self.state == ZFPlayerStatePause) { self.state = ZFPlayerStatePlaying; }
+    self.isPauseByUser = NO;
+    [_player play];
+}
+
+/**
+ * 暂停
+ */
+- (void)pause {
+    self.clearView.playOrPause.selected = NO;
+    if (self.state == ZFPlayerStatePlaying) { self.state = ZFPlayerStatePause;}
+    self.isPauseByUser = YES;
+    [_player pause];
+}
+
+
+/**
+ *  设置播放的状态
+ *
+ *  @param state ZFPlayerState
+ */
+- (void)setState:(ZFPlayerState)state {
+    _state = state;
+    // 控制菊花显示、隐藏
+    [self.clearView EwenplayerActivity:state == ZFPlayerStateBuffering];
+    if (state == ZFPlayerStatePlaying || state == ZFPlayerStateBuffering) {
+        // 隐藏占位图
+        self.clearView.backGroundImageView.hidden = YES;
+    } else if (state == ZFPlayerStateFailed) {
+        NSError *error = [self.playerItem error];
+        //        [self.controlView zf_playerItemStatusFailed:error];//加载失败点击重试
     }
-    //这个是用来监测视频播放的进度做出相应的操作
-    self.timerObserver = [self.avplayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-        long long currentSecond = playerItem.currentTime.value/playerItem.currentTime.timescale;
-        [self.bottomView.slider setValue:(float)currentSecond animated:YES];
-        NSString * tempTime = [self calculateTimeWithTimeFormatter:currentSecond];
-        if (tempTime.length > 5) {
-            self.bottomView.leftTime.text = [NSString stringWithFormat:@"00:%@", tempTime];
-        }else{
-            self.bottomView.leftTime.text = tempTime;
+}
+
+/**
+ *  从xx秒开始播放视频跳转
+ *
+ *  @param dragedSeconds 视频跳转的秒数
+ */
+- (void)seekToTime:(NSInteger)dragedSeconds completionHandler:(void (^)(BOOL finished))completionHandler {
+    if (self.player.currentItem.status == AVPlayerItemStatusReadyToPlay) {
+        // seekTime:completionHandler:不能精确定位
+        // 如果需要精确定位，可以使用seekToTime:toleranceBefore:toleranceAfter:completionHandler:
+        // 转换成CMTime才能给player来控制播放进度
+        [self.clearView EwenplayerActivity:YES];
+        [self.player pause];
+        CMTime dragedCMTime = CMTimeMake(dragedSeconds, 1); //kCMTimeZero
+        __weak typeof(self) weakSelf = self;
+        [self.player seekToTime:dragedCMTime toleranceBefore:CMTimeMake(1,1) toleranceAfter:CMTimeMake(1,1) completionHandler:^(BOOL finished) {
+            [weakSelf.clearView EwenplayerActivity:NO];
+            // 视频跳转回调
+            if (completionHandler) { completionHandler(finished); }
+            [weakSelf.player play];
+            weakSelf.seekTime = 0;
+            weakSelf.isDragged = NO;
+            // 结束滑动
+            [weakSelf.clearView playerDraggedEnd];
+            if (!weakSelf.playerItem.isPlaybackLikelyToKeepUp){ weakSelf.state = ZFPlayerStateBuffering; }
+            
+        }];
+    }
+}
+
+#pragma mark - 计算缓冲进度
+
+/**
+ *  计算缓冲进度
+ *
+ *  @return 缓冲进度
+ */
+- (NSTimeInterval)availableDuration {
+    NSArray *loadedTimeRanges = [[_player currentItem] loadedTimeRanges];
+    CMTimeRange timeRange     = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
+    float startSeconds        = CMTimeGetSeconds(timeRange.start);
+    float durationSeconds     = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result     = startSeconds + durationSeconds;// 计算缓冲总进度
+    return result;
+}
+
+
+#pragma mark - 缓冲较差时候
+
+/**
+ *  缓冲较差时候回调这里
+ */
+- (void)bufferingSomeSecond {
+    self.state = ZFPlayerStateBuffering;
+    // playbackBufferEmpty会反复进入，因此在bufferingOneSecond延时播放执行完之前再调用bufferingSomeSecond都忽略
+    __block BOOL isBuffering = NO;
+    if (isBuffering) return;
+    isBuffering = YES;
+    
+    // 需要先暂停一小会之后再播放，否则网络状况不好的时候时间在走，声音播放不出来
+    [self.player pause];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        // 如果此时用户已经暂停了，则不再需要开启播放了
+        if (self.isPauseByUser) {
+            isBuffering = NO;
+            return;
         }
-    }];
-}
-
-#pragma mark - 更新缓冲时间
--(void)updateAvailableDuration:(AVPlayerItem *)playerItem{
-    NSArray * loadedTimeRanges = playerItem.loadedTimeRanges;
-    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];
-    float startSeconds = CMTimeGetSeconds(timeRange.start);
-    float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-    NSTimeInterval result = startSeconds + durationSeconds;
-    if (self.totalSeconds) {
-        self.bottomView.progressView.progress = result/self.totalSeconds ;
-    }
-}
-
-#pragma mark - 当缓冲好视频调用的方法
--(void)readyToPlayConfigPlayView{
-    //将总时间设置slider的最大value, 方便计算
-//    self.avplayer.maximumValue = self.totalSeconds;
-//    self.actIndicator.hidden = YES;
-//    [self.actIndicator stopAnimating];
-//    self.totalTimeLabel.text = [self calculateTimeWithTimeFormatter:(self.totalSeconds)];
-//    _hiddenTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(controlViewHidden) userInfo:nil repeats:NO];
-}
-
-#pragma mark - 根据秒数计算时间
-
-- (NSString *)calculateTimeWithTimeFormatter:(long long)timeSecond{
-    NSString * theLastTime = nil;
-    if (timeSecond < 60) {
-        theLastTime = [NSString stringWithFormat:@"00:%.2lld", timeSecond];
-    }else if(timeSecond >= 60 && timeSecond < 3600){
-        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld", timeSecond/60, timeSecond%60];
-    }else if(timeSecond >= 3600){
-        theLastTime = [NSString stringWithFormat:@"%.2lld:%.2lld:%.2lld", timeSecond/3600, timeSecond%3600/60, timeSecond%60];
-    }
-    return theLastTime;
+        
+        [self play];
+        // 如果执行了play还是没有播放则说明还没有缓存好，则再次缓存一段时间
+        isBuffering = NO;
+        if (!self.playerItem.isPlaybackLikelyToKeepUp) { [self bufferingSomeSecond]; }
+        
+    });
 }
 
 

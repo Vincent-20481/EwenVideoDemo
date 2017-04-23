@@ -19,6 +19,7 @@
 		18AD06011CDC698400F9D5B1 /* EwenVideoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18AD06001CDC698400F9D5B1 /* EwenVideoView.xib */; };
 		502AAAFB1EA6541300B43948 /* KevinVideoDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = 502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */; };
 		507413FE1EA7BA9C00D58AEF /* BottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 507413FD1EA7BA9C00D58AEF /* BottomView.m */; };
+		50A5FD3B1EAC667200055581 /* ClearView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A5FD3A1EAC667200055581 /* ClearView.m */; };
 		A195B74EFBF2B4A1BF9FB380 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D76D874D1B97E4A3A18FF6F /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,8 @@
 		502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KevinVideoDemo.m; sourceTree = "<group>"; };
 		507413FC1EA7BA9C00D58AEF /* BottomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BottomView.h; sourceTree = "<group>"; };
 		507413FD1EA7BA9C00D58AEF /* BottomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomView.m; sourceTree = "<group>"; };
+		50A5FD391EAC667200055581 /* ClearView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearView.h; sourceTree = "<group>"; };
+		50A5FD3A1EAC667200055581 /* ClearView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearView.m; sourceTree = "<group>"; };
 		6D76D874D1B97E4A3A18FF6F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD942E4FC6DD6590531745D0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		DE653B9ED453828C320B41A4 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -194,6 +197,8 @@
 				502AAAFA1EA6541300B43948 /* KevinVideoDemo.m */,
 				507413FC1EA7BA9C00D58AEF /* BottomView.h */,
 				507413FD1EA7BA9C00D58AEF /* BottomView.m */,
+				50A5FD391EAC667200055581 /* ClearView.h */,
+				50A5FD3A1EAC667200055581 /* ClearView.m */,
 			);
 			path = KevinVideoDemo;
 			sourceTree = "<group>";
@@ -387,6 +392,7 @@
 				18AD05CB1CDC680400F9D5B1 /* main.m in Sources */,
 				18AD05FF1CDC696400F9D5B1 /* EwenVideoView.m in Sources */,
 				507413FE1EA7BA9C00D58AEF /* BottomView.m in Sources */,
+				50A5FD3B1EAC667200055581 /* ClearView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,24 +28,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //    EwenVideoView *ewenVideoVideo = [EwenVideoView avplayerViewWithVideoUrlStr:@"http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4"];
-    //    ewenVideoVideo.supView = self.view;
-    //    [self.view addSubview:ewenVideoVideo];
-    //    [ewenVideoVideo setPositionWithPortraitBlock:^(MASConstraintMaker *make) {
-    //        make.top.equalTo(0);
-    //        make.left.equalTo(0);
-    //        make.right.equalTo(0);
-    //        make.height.mas_equalTo(211*KBL);
-    //    } andLandscapeBlock:^(MASConstraintMaker *make) {
-    //        make.center.equalTo(Window);
-    //        make.width.mas_equalTo(kScreenheight);
-    //        make.height.mas_equalTo(kScreenwidth);
-    //    }];
+//        EwenVideoView *ewenVideoVideo = [EwenVideoView avplayerViewWithVideoUrlStr:@"http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4"];
+//        ewenVideoVideo.supView = self.view;
+//        [self.view addSubview:ewenVideoVideo];
+//        [ewenVideoVideo setPositionWithPortraitBlock:^(MASConstraintMaker *make) {
+//            make.top.equalTo(0);
+//            make.left.equalTo(0);
+//            make.right.equalTo(0);
+//            make.height.mas_equalTo(211*KBL);
+//        } andLandscapeBlock:^(MASConstraintMaker *make) {
+//            make.center.equalTo(Window);
+//            make.width.mas_equalTo(kScreenheight);
+//            make.height.mas_equalTo(kScreenwidth);
+//        }];
     
     
     
     [self.view addSubview:self.kevinVideo];
-    self.kevinVideo.supView = self.view;
+    self.kevinVideo.clearView.supView = self.view;
     [self.kevinVideo setPositionWithPortraitBlock:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(0);
         make.left.mas_equalTo(0);
@@ -62,7 +62,7 @@
 - (KevinVideoDemo *)kevinVideo{
     if (!_kevinVideo) {
         _kevinVideo = [KevinVideoDemo new];
-        _kevinVideo.videoUrlStr = @"http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4";
+        _kevinVideo.videoURL = [NSURL URLWithString:@"http://baobab.wdjcdn.com/1456459181808howtoloseweight_x264.mp4"];
     }
     return _kevinVideo;
 }
