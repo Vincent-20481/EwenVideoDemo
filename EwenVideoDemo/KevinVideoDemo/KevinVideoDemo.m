@@ -51,12 +51,6 @@
     }];
 }
 
-#pragma mark - layoutSubviews
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.playerLayer.frame = self.bounds;
-}
 
 
 /**设置初始位置block和, 全屏的block*/
@@ -67,19 +61,31 @@
     
 }
 
-- (void)configPlayer {
-    self.urlAsset = [AVURLAsset assetWithURL:self.videoURL];
-    // 初始化playerItem
-    self.playerItem = [AVPlayerItem playerItemWithAsset:self.urlAsset];
-    // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
-    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-    // 初始化playerLayer
-    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-    // 此处为默认视频填充模式
-    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-    // 添加播放进度计时器
-    [self createTimer];
-    [self.layer insertSublayer:self.playerLayer atIndex:0];
+//- (void)configPlayer {
+//    self.urlAsset = [AVURLAsset assetWithURL:self.videoURL];
+//    // 初始化playerItem
+//    self.playerItem = [AVPlayerItem playerItemWithAsset:self.urlAsset];
+//    // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
+//    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+//    // 初始化playerLayer
+//    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+//    // 此处为默认视频填充模式
+//    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+//    // 添加播放进度计时器
+//    [self createTimer];
+//    
+//}
+
+#pragma mark --- 懒加载播放器
+- (AVPlayer *)player{
+    if (!_player) {
+        self.urlAsset = [AVURLAsset assetWithURL:self.videoURL];
+        self.playerItem = [AVPlayerItem playerItemWithAsset:self.urlAsset];
+        _player = [AVPlayer playerWithPlayerItem:self.playerItem];
+        _player.usesExternalPlaybackWhileExternalScreenIsActive = YES;
+        [(AVPlayerLayer *)self.layer setPlayer:_player];
+    }
+    return _player;
 }
 
 
@@ -145,7 +151,6 @@
  */
 - (void)setVideoURL:(NSURL *)videoURL {
     _videoURL = videoURL;
-    [self configPlayer];
     // 每次加载视频URL都设置重播为NO
     self.repeatToPlay = NO;
     self.playDidEnd   = NO;
@@ -234,7 +239,7 @@
     self.clearView.playOrPause.selected = YES;
     if (self.state == ZFPlayerStatePause) { self.state = ZFPlayerStatePlaying; }
     self.isPauseByUser = NO;
-    [_player play];
+    [self.player play];
 }
 
 /**
@@ -244,7 +249,7 @@
     self.clearView.playOrPause.selected = NO;
     if (self.state == ZFPlayerStatePlaying) { self.state = ZFPlayerStatePause;}
     self.isPauseByUser = YES;
-    [_player pause];
+    [self.player pause];
 }
 
 
@@ -374,7 +379,10 @@
     }
 }
 
-
+#pragma mark - 用来将layer转为AVPlayerLayer, 必须实现的方法, 否则会崩
++(Class)layerClass{
+    return [AVPlayerLayer class];
+}
 
 
 @end
