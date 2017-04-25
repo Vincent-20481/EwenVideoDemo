@@ -94,8 +94,8 @@
     if (!_progressView) {
         _progressView = [UIProgressView new];
         _progressView.progressViewStyle = UIProgressViewStyleDefault;
-        _progressView.trackTintColor= [UIColor colorWithRed:135/255.f green:135/255.f blue:135/255.f alpha:1.0f];
-        _progressView.progressTintColor= [UIColor whiteColor];
+        _progressView.trackTintColor= [UIColor whiteColor];
+        _progressView.progressTintColor= [UIColor colorWithRed:180/255.f green:180/255.f blue:180/255.f alpha:1.0f];
         _progressView.progress = 0;
         [self addSubview:_progressView];
     }
@@ -105,10 +105,10 @@
 - (UISlider *)slider{
     if (!_slider) {
         _slider = [UISlider new];
-        _slider.minimumTrackTintColor = [UIColor redColor];
+        _slider.minimumTrackTintColor = [UIColor whiteColor];
         _slider.maximumTrackTintColor = [UIColor clearColor];
-        [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateNormal];
-        [_slider setThumbImage:[UIImage imageNamed:@"video_dot"] forState:UIControlStateHighlighted];
+        [_slider setThumbImage:[UIImage imageNamed:@"White_slider"] forState:UIControlStateNormal];
+        [_slider setThumbImage:[UIImage imageNamed:@"White_slider"] forState:UIControlStateHighlighted];
         
         // slider开始滑动事件
         [_slider addTarget:self action:@selector(progressSliderTouchBegan:) forControlEvents:UIControlEventTouchDown];
@@ -209,8 +209,8 @@
  */
 - (CGRect)thumbRect {
     return [self.slider thumbRectForBounds:self.slider.bounds
-                                      trackRect:[self.slider trackRectForBounds:self.slider.bounds]
-                                          value:self.slider.value];
+                                 trackRect:[self.slider trackRectForBounds:self.slider.bounds]
+                                     value:self.slider.value];
 }
 
 

@@ -19,11 +19,15 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
     ZFPlayerStatePause       // 暂停播放
 };
 typedef void(^LayoutBlock)(MASConstraintMaker * make);
+
 @interface KevinVideoDemo : UIView
+
 @property(nonatomic,strong)ClearView *clearView;//用来存放所有的播放器控件
 @property (nonatomic, strong)NSURL *videoURL;
 /**设置初始位置block和, 全屏的block*/
 -(void)setPositionWithPortraitBlock:(LayoutBlock)porBlock andLandscapeBlock:(LayoutBlock)landscapeBlock;
 
+/**播放视频*/
+- (void)play;
 
 @end

@@ -59,7 +59,7 @@
 
 #pragma mark --- 懒加载控件
 - (UIImageView *)backGroundImageView{
-    if (_backGroundImageView) {
+    if (!_backGroundImageView) {
         _backGroundImageView = [UIImageView new];
         _backGroundImageView.userInteractionEnabled = YES;
         [self addSubview:_backGroundImageView];

@@ -44,7 +44,7 @@
 
 - (void)createUI{
     
-    self.backgroundColor = [UIColor grayColor];
+    self.backgroundColor = [UIColor blackColor];
     
     [self.clearView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
@@ -61,20 +61,7 @@
     
 }
 
-//- (void)configPlayer {
-//    self.urlAsset = [AVURLAsset assetWithURL:self.videoURL];
-//    // 初始化playerItem
-//    self.playerItem = [AVPlayerItem playerItemWithAsset:self.urlAsset];
-//    // 每次都重新创建Player，替换replaceCurrentItemWithPlayerItem:，该方法阻塞线程
-//    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-//    // 初始化playerLayer
-//    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-//    // 此处为默认视频填充模式
-//    self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-//    // 添加播放进度计时器
-//    [self createTimer];
-//    
-//}
+
 
 #pragma mark --- 懒加载播放器
 - (AVPlayer *)player{
@@ -112,8 +99,7 @@
     NSInteger durSec = totalTime % 60;//总分钟
     if (!self.isDragged) {
         // 更新slider
-        self.clearView.bottomView.slider.value           = value;
-        self.clearView.bottomView.progressView.progress = value;
+        self.clearView.bottomView.slider.value  = value;
         // 更新当前播放时间
         self.clearView.bottomView.leftTime.text       = [NSString stringWithFormat:@"%02zd:%02zd", proMin, proSec];
     }
@@ -201,6 +187,7 @@
         if ([keyPath isEqualToString:@"status"]) {
             if (self.player.currentItem.status == AVPlayerItemStatusReadyToPlay) {
                 self.state = ZFPlayerStatePlaying;
+                [self createTimer];
                 // 跳到xx秒播放视频
                 if (self.seekTime) {
                     [self seekToTime:self.seekTime completionHandler:nil];
@@ -213,7 +200,7 @@
             NSTimeInterval timeInterval = [self availableDuration];
             CMTime duration             = self.playerItem.duration;
             CGFloat totalDuration       = CMTimeGetSeconds(duration);
-            [self.clearView.bottomView.progressView setProgress:timeInterval/totalDuration animated:YES];
+            [self.clearView.bottomView.progressView setProgress:timeInterval/totalDuration animated:NO];
             
         } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
             
@@ -355,16 +342,16 @@
     NSInteger dragedSeconds = floorf(total * value);
     self.clearView.playOrPause.selected = YES;
     [self seekToTime:dragedSeconds completionHandler:^(BOOL finished) {}];
-
+    
 }
 /** 开始触摸slider */
 - (void)bottomView:(UIView *)controlView progressSliderTouchBegan:(UISlider *)slider{
-
+    
 }
 /** slider触摸中 */
 - (void)bottomView:(UIView *)controlView progressSliderValueChanged:(UISlider *)slider{
-  
-
+    
+    
 }
 /** slider触摸结束 */
 - (void)bottomView:(UIView *)controlView progressSliderTouchEnded:(UISlider *)slider{
